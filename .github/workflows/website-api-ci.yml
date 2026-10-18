@@ -1,0 +1,38 @@
+name: Website & API verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  website:
+    name: Static website sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check site.js
+      - run: node --check account.js
+      - run: node --check api-config.js
+      - name: Check no Supabase Auth or obsolete theme code
+        shell: bash
+        run: |
+          if grep -Eq 'supabase-config.js|src="./auth.js"|data-accent="violet"' index.html; then
+            echo 'Obsolete website configuration detected'
+            exit 1
+          fi
+  api:
+    name: API unit tests and syntax
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
