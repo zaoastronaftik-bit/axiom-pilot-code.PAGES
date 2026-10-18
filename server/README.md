@@ -39,3 +39,14 @@ The tests cover CORS and request utilities. Add real DB integration tests before
 - No public write path for `plan`. Only trusted backend/database maintenance can assign Pro.
 - Profiles and secrets are never stored in GitHub Pages. No telemetry or cloud model interaction.
 - Reset emails require a trusted sender and the backend secret.
+
+## Browser-to-CLI device authorization (beta API)
+
+- `POST /api/device?action=start` (native CLI, no Origin needed): returns a one-use random `deviceCode`, human-friendly `userCode`, expiration time and browser `verificationUri`. The 256-bit device secret is stored as SHA-256, never in plaintext.
+- The user opens `verificationUri`, signs in and **explicitly approves** the short code. This is not an automatic or hidden login.
+- `POST /api/device?action=approve` (browser, Better Auth bearer): `{ "userCode": "ABCD-EFGH" }`. Rejects used/expired codes.
+- `POST /api/device?action=poll` (CLI): `{ "deviceCode": "..." }`; returns HTTP 202 while pending or one-use `axiom_cli_...` bearer token after approval; do not poll more often than the returned 5-second interval.
+- `GET /api/cli` with the CLI bearer token validates the 90-day access token against its SHA-256 DB hash and returns the active plan.
+- **Important:** a device token is not a regular Better Auth browser session and cannot act as an admin token. CLI must save its one-time access token in OS-protected credential storage, not in the project directory or shell history.
+- Additional hardening before general release: route-specific distributed rate limiting, CLI token revocation UX, multi-device listing, integration tests with a real Postgres instance and adversarial review.
+- Run `sql/002_cli_devices.sql` after `sql/001_profiles.sql`.
