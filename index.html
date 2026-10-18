@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="AxiomPilotCode — a local-first coding agent with your models, your workspace, your control." />
+  <meta name="theme-color" content="#f9fbff" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <title>AxiomPilotCode — Build without giving up control</title>
+  <style>
+    :root {
+      --ink: #182333; --muted:#657287; --subtle:#8a96a8; --line:rgba(61,92,135,.13);
+      --accent:#376ce6; --accent-rgb:55,108,230; --accent-soft:#e8efff;
+      --back:#f9fbff; --glass:rgba(255,255,255,.68); --paper:#fff;
+      --ease:cubic-bezier(.19,1,.22,1);
+      font-synthesis:none;
+    }
+    :root[data-accent="violet"] { --accent:#7959d8; --accent-rgb:121,89,216; --accent-soft:#f0eaff; }
+    *, *::before, *::after { box-sizing:border-box; }
+    html {scroll-behavior:smooth;scroll-padding-top:120px}
+    body { margin:0; color:var(--ink); background:var(--back); font-family:Inter, 'Segoe UI', system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    button,input {font:inherit;} a {color:inherit;text-decoration:none} button {cursor:pointer;} ::selection{background:rgba(var(--accent-rgb),.15)}
+    :focus-visible {outline:3px solid rgba(var(--accent-rgb),.45);outline-offset:4px}
+    .scene {position:absolute;top:0;left:0;right:0;height:1040px;overflow:hidden;pointer-events:none;z-index:-1}
+    .scene::before {content:"";position:absolute;inset:0;background:radial-gradient(circle at 83% 23%,rgba(var(--accent-rgb),.135),transparent 33%), radial-gradient(circle at 14% 44%,rgba(153,187,238,.20),transparent 31%),radial-gradient(circle at 52% 3%,rgba(217,224,248,.54),transparent 32%);}
+    .scene::after {content:"";position:absolute;right:-290px;top:200px;width:780px;height:600px;border-radius:100%;background:rgba(var(--accent-rgb),.09);filter:blur(110px);}
+    .wrap {width:min(1180px,calc(100% - 64px));margin-inline:auto}
+    .topbar {position:sticky;z-index:20;top:18px;margin-top:18px;}
+    .topbar-inner {display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:66px;padding:10px 15px 10px 22px;border:1px solid rgba(255,255,255,.95);border-radius:19px;background:rgba(255,255,255,.66);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);box-shadow:0 7px 35px rgba(60,88,137,.075),0 1px 2px rgba(20,52,96,.035)}
+    .brand {display:inline-flex;align-items:center;gap:11px;white-space:nowrap;font-weight:720;letter-spacing:-.045em;font-size:17px}
+    .brand svg{height:35px;width:35px;filter:drop-shadow(0 4px 8px rgba(var(--accent-rgb),.15))}
+    .brand em {color:var(--accent);font-style:normal}
+    .nav-links{display:flex;align-items:center;gap:34px;color:#58677e;font-size:13px;font-weight:560}
+    .nav-links a:hover,.footer a:hover {color:var(--accent)}
+    .actions{display:flex;align-items:center;gap:13px}
+    .palette {border:1px solid var(--line);background:rgba(255,255,255,.82);height:36px;display:flex;align-items:center;gap:7px;padding:0 9px;border-radius:10px}
+    .color {width:17px;height:17px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px transparent; padding:0;transition:box-shadow .2s,transform .2s}
+    .color:hover {transform:scale(1.1)}.color[aria-pressed="true"]{box-shadow:0 0 0 1px var(--ink)}.color.blue{background:#376ce6}.color.violet{background:#7959d8}
+    .btn {display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:11px;padding:12px 17px;font-size:13px;letter-spacing:-.006em;font-weight:650;border:1px solid transparent;transition:transform .3s var(--ease),box-shadow .3s,background .2s}
+    .btn:hover {transform:translateY(-2px)}.btn-primary{color:white;background:var(--accent);box-shadow:0 6px 17px rgba(var(--accent-rgb),.18)}.btn-primary:hover{box-shadow:0 10px 25px rgba(var(--accent-rgb),.27)}.btn-secondary{background:rgba(255,255,255,.72);color:#253247;border-color:rgba(75,103,147,.17)}.btn-secondary:hover{background:white}
+    .btn svg{width:15px;height:15px} .mobile-nav{display:none}
+    .hero {display:grid;grid-template-columns:.94fr 1.06fr;min-height:660px;align-items:center;gap:62px;padding:105px 0 100px}
+    .eyebrow {display:flex;align-items:center;gap:10px;color:#6d7c94;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+    .eyebrow:before {content:"";width:6px;height:6px;background:var(--accent);box-shadow:0 0 0 4px rgba(var(--accent-rgb),.1);border-radius:50%}
+    h1 {font-size:clamp(55px,5.6vw,79px);line-height:1.05;letter-spacing:-.079em;font-weight:690;margin:28px 0 25px;max-width:590px}
+    .focus {color:var(--accent)}
+    .intro {font-size:16px;line-height:1.77;color:#6b788b;max-width:450px;margin:0 0 30px}
+    .hero-buttons {display:flex;gap:12px;flex-wrap:wrap}
+    .hero-note{margin-top:30px;display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.01em;color:#8592a4}
+    .hero-note .icon{width:14px;height:14px;color:var(--accent)}
+    .stage {position:relative;min-width:0}
+    .stage::before{content:"";position:absolute;inset:9% 8%;background:radial-gradient(ellipse,rgba(var(--accent-rgb),.20),transparent 65%);filter:blur(36px);pointer-events:none}
+    .terminal {position:relative;overflow:hidden;background:rgba(255,255,255,.71);border:1px solid rgba(255,255,255,.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:20px;box-shadow:0 35px 100px rgba(55,79,113,.10),0 3px 12px rgba(71,95,127,.06),inset 0 1px rgba(255,255,255,.9);transform:rotate(-1deg);animation:rise .9s var(--ease) both}
+    .terminal-chrome{height:57px;display:flex;align-items:center;justify-content:space-between;padding:0 21px;border-bottom:1px solid rgba(77,107,147,.09)}
+    .lights{display:flex;gap:7px}.lights i{height:8px;width:8px;background:#cbd6e3;border-radius:50%}.lights i:first-child{background:#e5b6b1}.lights i:nth-child(2){background:#e6d09e}.lights i:last-child{background:#b6d6bb}
+    .t-title{font-size:12px;color:#778398;font-weight:620}.t-top-right{font-size:10px;color:#97a5b3;border:1px solid var(--line);border-radius:6px;padding:5px 7px}
+    .terminal-inner{padding:31px 31px 26px;font-family:'Cascadia Code','SFMono-Regular',Consolas,monospace;font-size:12px;line-height:1.8;letter-spacing:-.018em;color:#3b4b5d;min-height:343px}
+    .prompt{color:var(--accent)}.dim{color:#8c9aab}.t-heading{display:flex;align-items:center;justify-content:space-between;margin:23px 0 7px}.t-tag{padding:3px 8px;border-radius:7px;background:var(--accent-soft);color:var(--accent);font-family:Inter,'Segoe UI',sans-serif;font-size:10px;font-weight:720}
+    .t-sep{height:1px;background:rgba(44,65,90,.10);margin:18px 0}.line{display:flex;gap:10px;align-items:baseline}.check{color:#279486}.terminal-actions{display:flex;gap:6px;padding-top:16px}.mode-btn{border:1px solid rgba(79,111,154,.12);color:#8995a7;background:rgba(255,255,255,.6);border-radius:7px;padding:6px 12px;font-size:10px;font-weight:750;letter-spacing:.08em}.mode-btn.on{color:var(--accent);background:var(--accent-soft);border-color:rgba(var(--accent-rgb),.17)}
+    .terminal-bottom{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:15px 30px;border-top:1px solid rgba(77,107,147,.09);font-size:11px;color:#8694a4}
+    .status{display:flex;gap:7px;align-items:center}.status:before{content:"";width:6px;height:6px;border-radius:100%;background:#36b99a}
+    .float-card{position:absolute;right:-34px;bottom:-43px;padding:16px 20px;border:1px solid rgba(255,255,255,.9);border-radius:13px;background:rgba(255,255,255,.77);backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(55,82,120,.13);font-size:12px;animation:float 7s ease-in-out infinite}
+    .float-card strong{display:block;font-size:12px;margin-bottom:6px}.float-card span{font-size:11px;color:#8c98a7}
+    .float-symbol{display:inline-block;border:1px solid rgba(var(--accent-rgb),.19);background:var(--accent-soft);color:var(--accent);border-radius:7px;padding:5px;margin-right:8px}
+    .section {padding:116px 0}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:37px}.section h2{font-size:clamp(34px,4vw,54px);line-height:1.14;letter-spacing:-.067em;font-weight:680;margin:18px 0 0;max-width:580px}.section-head p{color:var(--muted);line-height:1.8;font-size:14px;max-width:350px;margin:0}
+    .features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .feature {padding:31px;border:1px solid rgba(255,255,255,.93);background:rgba(255,255,255,.65);backdrop-filter:blur(18px);border-radius:20px;min-height:264px;box-shadow:0 8px 40px rgba(60,83,121,.045);transition:transform .35s var(--ease),box-shadow .35s}.feature:hover {transform:translateY(-5px);box-shadow:0 18px 56px rgba(60,83,121,.095)}
+    .feature-icon {height:42px;width:42px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+    .feature-icon svg {width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .feature h3 {font-size:18px;letter-spacing:-.035em;margin:43px 0 11px;font-weight:690}.feature p{font-size:13px;line-height:1.8;color:#7b8798;margin:0}
+    .statement{position:relative;border:1px solid rgba(255,255,255,.92);background:linear-gradient(118deg,rgba(255,255,255,.78),rgba(243,248,255,.55));padding:54px 60px;border-radius:24px;display:grid;grid-template-columns:1fr .95fr;gap:50px;align-items:center;box-shadow:0 18px 65px rgba(49,72,109,.055)}
+    .statement .small{color:var(--accent);font-size:11px;letter-spacing:.13em;font-weight:750}.statement h2{font-size:clamp(32px,4vw,49px);margin:16px 0 20px;letter-spacing:-.065em;line-height:1.15}.statement p{color:#7e8a9b;line-height:1.8;font-size:14px;max-width:395px}.codebox{font-family:'Cascadia Code',Consolas,monospace;font-size:12px;background:rgba(251,253,255,.93);border:1px solid rgba(65,106,154,.12);border-radius:14px;padding:22px 24px;box-shadow:0 9px 25px rgba(55,79,109,.06);color:#5c6a7b}.codebox .comment{color:#9ca9b7}.codebox .command{color:var(--accent)}.codebox button{float:right;border:0;background:none;color:#7c8c9e;padding:3px;font-size:12px}.codebox button:hover{color:var(--accent)}
+    .pricing{display:grid;grid-template-columns:1fr 1fr;gap:20px}.price-card{border:1px solid rgba(255,255,255,.95);background:rgba(255,255,255,.7);border-radius:22px;padding:36px 37px 38px;box-shadow:0 14px 42px rgba(56,89,126,.05)}.price-card.pro{background:linear-gradient(135deg,rgba(255,255,255,.85),rgba(var(--accent-rgb),.045));border-color:rgba(var(--accent-rgb),.17)}
+    .price-card .price-head{display:flex;justify-content:space-between;align-items:center}.price-card h3{font-size:19px;letter-spacing:-.04em;margin:0}.price-badge{background:var(--accent-soft);color:var(--accent);font-size:10px;letter-spacing:.09em;font-weight:700;padding:7px 9px;border-radius:7px}.price{font-size:40px;font-weight:700;letter-spacing:-.075em;margin:29px 0 7px}.price small{font-size:13px;letter-spacing:0;color:#94a0ad;font-weight:500}.price-card .desc{color:#8290a0;font-size:13px;margin-bottom:33px;line-height:1.7}.benefits{padding:23px 0 0;border-top:1px solid var(--line);display:grid;gap:14px;color:#637186;font-size:13px}.benefits span:before{content:'✓';color:var(--accent);font-weight:800;margin-right:12px}
+    .profile-preview{border-radius:20px;border:1px solid rgba(255,255,255,.95);background:rgba(255,255,255,.62);padding:36px;display:flex;gap:18px;align-items:center;justify-content:space-between}.avatar{display:grid;place-items:center;font-weight:740;color:var(--accent);background:var(--accent-soft);height:53px;width:53px;border-radius:16px;font-size:20px}.profile-preview h3{font-size:16px;margin:0 0 5px}.profile-preview p{font-size:12px;color:#8895a5;margin:0}.profile-main{display:flex;align-items:center;gap:17px}.profile-note{margin-top:14px;font-size:11px;color:#9ba6b5}
+    .footer{display:flex;justify-content:space-between;align-items:center;gap:30px;padding:50px 0 66px;border-top:1px solid var(--line);color:#8190a0;font-size:12px}.footer .brand{color:var(--ink)}.footer .links{display:flex;gap:23px}
+    dialog{border:0;padding:0;border-radius:22px;width:min(440px,calc(100% - 32px));box-shadow:0 30px 120px rgba(30,45,80,.19);color:var(--ink);background:rgba(255,255,255,.96);backdrop-filter:blur(30px)}dialog::backdrop{background:rgba(28,46,80,.26);backdrop-filter:blur(5px)}.modal-body{padding:35px}.modal-top{display:flex;justify-content:space-between;align-items:center}.close-modal{background:transparent;border:0;color:#8590a0;font-size:25px;line-height:1}.modal-body h2{font-size:26px;letter-spacing:-.06em;margin:28px 0 11px}.modal-body p{color:#7c8999;font-size:13px;line-height:1.7}.auth-tabs{display:flex;gap:8px;margin:26px 0}.auth-tab{flex:1;border:1px solid var(--line);background:#f9fbff;padding:11px;border-radius:9px;color:#7d899a;font-size:12px;font-weight:600}.auth-tab.current{background:var(--accent-soft);color:var(--accent);border-color:rgba(var(--accent-rgb),.18)}.field{display:grid;gap:7px;margin:15px 0}.field label{font-size:12px;color:#617188;font-weight:600}.field input{border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink);background:#fff;font-size:14px;outline:0}.field input:focus{border-color:rgba(var(--accent-rgb),.45)}.preview-warning{font-size:11px;line-height:1.6;color:#8893a4;background:#f4f7fc;border-radius:9px;padding:13px;margin:22px 0}.form-message{font-size:12px;color:var(--accent);margin:12px 0 0}
+    .reveal{opacity:0;transform:translateY(21px);transition:opacity .8s var(--ease),transform .8s var(--ease)}.reveal.in{opacity:1;transform:translateY(0)}
+    @keyframes rise{from{opacity:0;transform:translateY(30px) rotate(-1deg)}to{opacity:1;transform:translateY(0) rotate(-1deg)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    @media(max-width:1040px){.hero{grid-template-columns:1fr 1fr;gap:28px}.float-card{right:-12px}.nav-links{gap:19px}}
+    @media(max-width:800px){.wrap{width:min(100% - 40px,610px)}.topbar{top:10px;margin-top:10px}.topbar-inner{min-height:61px;padding:10px 13px}.nav-links{display:none}.hero{display:flex;flex-direction:column;gap:50px;align-items:stretch;padding:88px 0 90px;min-height:0}.hero h1{font-size:clamp(48px,12vw,73px)}.terminal{transform:none}.terminal{animation:none}.float-card{right:-8px;bottom:-28px}.section{padding:77px 0}.section-head{display:block}.section-head p{margin-top:20px}.features{grid-template-columns:1fr}.feature{min-height:0}.feature h3{margin-top:25px}.statement{grid-template-columns:1fr;padding:35px 27px;gap:25px}.pricing{grid-template-columns:1fr}.footer{flex-direction:column;align-items:flex-start}.actions>.btn{padding:10px 13px}}
+    @media(max-width:460px){.wrap{width:calc(100% - 30px)}.brand{font-size:15px}.brand svg{height:30px;width:30px}.palette{padding:0 7px;gap:5px}.actions{gap:7px}.actions>.btn{font-size:12px}.hero{padding-top:62px}.hero h1{font-size:48px}.intro{font-size:14px}.terminal-inner{padding:20px 18px;font-size:10px;min-height:0}.terminal-chrome{padding:0 18px}.terminal-bottom{padding:13px 18px;font-size:10px}.t-title{font-size:10px}.float-card{position:relative;right:auto;bottom:auto;display:inline-block;margin-top:12px;animation:none}.profile-preview{align-items:flex-start;flex-direction:column}.statement h2{font-size:36px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true"></div>
+  <header class="topbar wrap">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="AxiomPilotCode home">
+        <svg viewBox="0 0 70 70" aria-hidden="true" fill="none"><defs><linearGradient id="g" x1="6" x2="64" y1="60" y2="5" gradientUnits="userSpaceOnUse"><stop stop-color="var(--accent)"/><stop offset="1" stop-color="#9baaff"/></linearGradient></defs><path d="M9 51C3 32 13 12 31 7" stroke="url(#g)" stroke-width="3" opacity=".65" stroke-linecap="round"/><path d="M39 7C56 10 67 30 60 51" stroke="url(#g)" stroke-width="3" opacity=".65" stroke-linecap="round"/><path d="M12 57L34 18L57 57" stroke="url(#g)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><path d="m27 42 8 7-8 7M37 56h9" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="m34 3 1.5 4 4 1.5-4 1.5L34 14l-1.5-4-4-1.5 4-1.5L34 3Z" fill="var(--accent)"/></svg>
+        <span>Axiom<em>Pilot</em>Code</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#features">Product</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+      <div class="actions"><div class="palette" aria-label="Accent color"><button class="color blue" data-color="blue" aria-label="Blue accent" aria-pressed="true" title="Blue accent"></button><button class="color violet" data-color="violet" aria-label="Violet accent" aria-pressed="false" title="Violet accent"></button></div><button class="btn btn-primary" id="open-account">Account <span aria-hidden="true">↗</span></button></div>
+    </div>
+  </header>
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">Your AI. Your environment.</div>
+        <h1>Build freely.<br/>Stay in <span class="focus">control.</span></h1>
+        <p class="intro">A thoughtful coding companion built around your own models. Write, iterate, and ship — with an AI agent that works where your code lives.</p>
+        <div class="hero-buttons"><a class="btn btn-primary" href="#how">See how it works <span aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">Explore on GitHub <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-note"><svg class="icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="14" height="10" rx="2"/><path d="M6 8V6a4 4 0 0 1 8 0v2"/></svg>Local-first by design · Built for developers</div>
+      </div>
+      <div class="stage">
+        <div class="terminal">
+          <div class="terminal-chrome"><div class="lights" aria-hidden="true"><i></i><i></i><i></i></div><span class="t-title">axiompilotcode / workspace</span><span class="t-top-right">LOCAL</span></div>
+          <div class="terminal-inner">
+            <div><span class="dim">C:\projects\studio&gt;</span> <span class="prompt">pilotcode</span></div>
+            <div style="margin-top:20px;color:var(--ink);font-weight:750">◇ AxiomPilotCode <span class="dim" style="font-weight:400">v0.1</span></div>
+            <div class="dim">model  Qwen · LM Studio</div>
+            <div class="t-heading"><span><span class="prompt">❯</span> <span id="terminal-prompt">Create a polished analytics dashboard.</span></span><span class="t-tag" id="active-mode">DEEP</span></div>
+            <div class="t-sep"></div>
+            <div id="terminal-lines" aria-live="polite"><div class="line"><span class="check">✓</span><span>Map out component architecture</span></div><div class="line"><span class="check">✓</span><span>Build responsive layout</span></div><div class="line"><span class="check">✓</span><span>Review styles and run checks</span></div><div class="line"><span class="dim">◇</span><span class="dim">Ready for your review</span></div></div>
+            <div class="terminal-actions"><button class="mode-btn" id="fast-btn" aria-pressed="false">FAST</button><button class="mode-btn on" id="deep-btn" aria-pressed="true">DEEP</button></div>
+          </div>
+          <div class="terminal-bottom"><span class="status">Connected to local model</span><span>Ready when you are ↗</span></div>
+        </div>
+        <div class="float-card"><strong><span class="float-symbol">⌘</span>One workspace. Full control.</strong><span>Your models stay on your machine.</span></div>
+      </div>
+    </section>
+    <section class="section wrap" id="features">
+      <div class="section-head reveal"><div><div class="eyebrow">The essentials, refined</div><h2>Powerful by nature.<br/>Quiet by design.</h2></div><p>Everything you need to build with AI, thoughtfully integrated into the way you already work.</p></div>
+      <div class="features">
+        <article class="feature reveal"><div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m8 10 3 3-3 3m6 0h4"/></svg></div><h3>Terminal-native</h3><p>A lightweight companion for your existing workflow. Real tools, real files, and the context of your project.</p></article>
+        <article class="feature reveal"><div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="4"/><path d="M9 7h6M9 12h6M9 17h3"/></svg></div><h3>Local by default</h3><p>Connect models served by LM Studio. Keep your prompts and code on your own machine.</p></article>
+        <article class="feature reveal"><div class="feature-icon"><svg viewBox="0 0 24 24"><path d="m12 2 2.6 6.7L21 11l-6.4 2.3L12 20l-2.6-6.7L3 11l6.4-2.3L12 2Z"/><path d="M19 19h2M20 18v2"/></svg></div><h3>Adapt to the task</h3><p>Fast when the answer is simple. Deep when work calls for planning, verification, and iteration.</p></article>
+      </div>
+    </section>
+    <section class="section wrap" id="how">
+      <div class="statement reveal">
+        <div><div class="small">GETTING STARTED</div><h2>From your terminal.<br/>Into your workflow.</h2><p>Bring a local model, connect LM Studio, and start building. No opaque magic behind the scenes — just your tools, working together.</p><a class="btn btn-secondary" href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">Read the repository ↗</a></div>
+        <div class="codebox"><button id="copy-command" type="button" title="Copy local development command">Copy</button><div class="comment"># After downloading the source</div><div style="margin-top:12px"><span class="command">$</span> npm install -g .</div><div style="margin-top:19px" class="comment"># Start the CLI</div><div style="margin-top:12px"><span class="command">$</span> pilotcode</div><div style="margin-top:19px" class="comment"># Switch working modes</div><div style="margin-top:12px"><span class="command">❯</span> /mode deep</div></div>
+      </div>
+    </section>
+    <section class="section wrap" id="pricing">
+      <div class="section-head reveal"><div><div class="eyebrow">Simple foundations</div><h2>Your workspace.<br/>Your choice.</h2></div><p>Start locally. Grow with your workflow. No complicated plans just to write code with the models you already own.</p></div>
+      <div class="pricing">
+        <article class="price-card reveal"><div class="price-head"><h3>Free</h3><span class="price-badge">LOCAL FIRST</span></div><div class="price">$0 <small>/ forever</small></div><div class="desc">Essential local coding tools, with no per-token charges from us.</div><div class="benefits"><span>Local LM Studio models</span><span>Fast and Deep modes</span><span>File and workspace tools</span></div></article>
+        <article class="price-card pro reveal"><div class="price-head"><h3>Pro</h3><span class="price-badge">PLANNED</span></div><div class="price">Soon <small>/ details to come</small></div><div class="desc">Designed for expanded workflows and optional online services. Not available for purchase yet.</div><div class="benefits"><span>Extended agent workflows — planned</span><span>Workspace sync — planned</span><span>More integrations — planned</span></div></article>
+      </div>
+    </section>
+    <section class="section wrap" id="account-section" style="padding-top:55px"><div class="section-head reveal"><div><div class="eyebrow">One account, across devices</div><h2>Keep a place<br/>for your work.</h2></div><p>Account sign-in and CLI authorization are next on the roadmap. Here is a preview of the profile experience.</p></div><div class="profile-preview reveal"><div class="profile-main"><div class="avatar">A</div><div><h3>My workspace</h3><p>Personal account · Example profile</p></div></div><button class="btn btn-secondary" id="preview-profile">Account roadmap ↗</button></div><p class="profile-note">Account features are being designed. No registration is active on this site yet.</p></section>
+  </main>
+  <footer class="wrap footer"><a class="brand" href="#top">Axiom<em>Pilot</em>Code</a><div>Built around your work, not the other way around.</div><div class="links"><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="#pricing">Pricing</a><a href="#top">Back to top ↑</a></div></footer>
+  <dialog id="account-modal" aria-labelledby="modal-heading"><div class="modal-body"><div class="modal-top"><div class="brand">Axiom<em>Pilot</em>Code</div><button class="close-modal" id="close-account" aria-label="Close information">×</button></div><div class="eyebrow" style="margin-bottom:18px">COMING NEXT</div><h2 id="modal-heading">Your space to build.</h2><p>Accounts and CLI sign-in will arrive after we connect Supabase authentication. Registration is not active yet.</p><div class="preview-warning" style="margin-top:24px">No password or personal information is requested on this preview site.</div><a class="btn btn-secondary" href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer" style="margin-top:21px">Project on GitHub ↗</a></div></dialog>
+  <script>
+    const root=document.documentElement;
+    const colors=document.querySelectorAll('[data-color]');
+    function setAccent(accent){root.dataset.accent=accent;colors.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.color===accent)));}
+    colors.forEach(c=>c.addEventListener('click',()=>setAccent(c.dataset.color)));
+    const lines=document.getElementById('terminal-lines');
+    const prompt=document.getElementById('terminal-prompt');
+    const modeTag=document.getElementById('active-mode');
+    function setMode(mode){const deep=mode==='deep';modeTag.textContent=mode.toUpperCase();prompt.textContent=deep?'Create a polished analytics dashboard.':'Refactor this component for clarity.';lines.replaceChildren();const entries=deep?[['✓','Map out component architecture'],['✓','Build responsive layout'],['✓','Review styles and run checks'],['◇','Ready for your review']]:[['✓','Read the requested component'],['✓','Apply a focused edit'],['◇','Changes ready to inspect']];for(const [mark,label] of entries){const row=document.createElement('div');row.className='line';const sign=document.createElement('span');sign.textContent=mark;sign.className=mark==='✓'?'check':'dim';const copy=document.createElement('span');copy.textContent=label;if(mark!=='✓')copy.className='dim';row.append(sign,copy);lines.append(row)}for(const v of ['fast','deep']){const b=document.getElementById(v+'-btn');b.classList.toggle('on',v===mode);b.setAttribute('aria-pressed',String(v===mode))}}
+    document.getElementById('fast-btn').addEventListener('click',()=>setMode('fast'));document.getElementById('deep-btn').addEventListener('click',()=>setMode('deep'));
+    document.getElementById('copy-command').addEventListener('click',async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText('npm install -g .\npilotcode');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1800)}catch{b.textContent='Use the commands shown';setTimeout(()=>b.textContent='Copy',1800)}});
+    const modal=document.getElementById('account-modal');function showModal(){modal.showModal()}document.getElementById('open-account').addEventListener('click',showModal);document.getElementById('preview-profile').addEventListener('click',showModal);document.getElementById('close-account').addEventListener('click',()=>modal.close());modal.addEventListener('click',e=>{if(e.target===modal)modal.close()});
+    if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){e.target.classList.add('in');observer.unobserve(e.target)}}},{threshold:.11});document.querySelectorAll('.reveal').forEach(e=>observer.observe(e))}else{document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'))}
+  </script>
+</body>
+</html>
