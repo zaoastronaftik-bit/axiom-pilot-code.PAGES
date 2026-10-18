@@ -14,6 +14,7 @@ jobs:
           node-version: '22'
       - run: node --check site.js
       - run: node --check account.js
+      - run: node --check device-ui.js
       - run: node --check api-config.js
       - name: Check no Supabase Auth or obsolete theme code
         shell: bash
