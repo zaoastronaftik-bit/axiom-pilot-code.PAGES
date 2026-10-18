@@ -56,3 +56,15 @@ dialog#account-modal{width:min(480px,calc(100vw - 28px));max-height:min(92dvh,85
 .auth-subtitle{margin:0 0 15px;font-size:13px;color:#77899a;line-height:1.75}
 @media(max-width:520px){.account-shell{padding:23px 22px 27px}.auth-eyebrow{margin-top:30px}#account-modal{border-radius:20px}.auth-copy{margin-bottom:21px}}
 @media(prefers-reduced-motion:reduce){#account-modal[open]{animation:none!important}}
+
+
+/* Explicit CLI account linking */
+.device-approval{margin-top:25px;padding:19px;border:1px solid rgba(47,123,187,.14);border-radius:16px;background:rgba(224,242,252,.45)}
+.device-approval-title{font-size:14px;font-weight:690;letter-spacing:-.025em;color:#294c68}
+.device-approval p{font-size:11px;color:#718b9e;line-height:1.6;margin:9px 0 17px}
+.device-approval label{font-size:11px;font-weight:650;color:#436680;display:block;margin-bottom:7px}
+.device-approval input{width:100%;height:43px;border:1px solid rgba(59,123,167,.22);border-radius:10px;padding:0 13px;text-align:center;font-family:Consolas,monospace;letter-spacing:.16em;color:#295f8d;background:rgba(255,255,255,.83)}
+.device-approval input:focus{outline:none;border-color:#4396cb;box-shadow:0 0 0 3px rgba(67,150,203,.11)}
+.device-approval .auth-submit{margin-top:10px;min-height:43px}
+#device-status{font-size:11px;line-height:1.55;margin-top:10px}
+#device-status:empty{display:none}
