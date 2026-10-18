@@ -50,6 +50,9 @@
     tabLogin.setAttribute("aria-selected", String(next === "login"));
     tabSignup.setAttribute("aria-selected", String(next === "signup"));
     message();
+    if (!client && (!config.url || !config.anonKey) && next !== "profile") {
+      message("Account access is not live yet. We are connecting Supabase; please do not enter a real password until it is enabled.");
+    }
   }
 
   function openAccount(next = "login") {
