@@ -1,0 +1,17 @@
+{
+  "name": "@axiompilotcode/account-api",
+  "private": true,
+  "version": "1.0.0-rc.1",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "check": "node --check lib/auth.js && node --check lib/http.js && node --check api/auth.js && node --check api/profile.js && node --check api/status.js",
+    "test": "node --test tests/*.test.js",
+    "db:generate": "npx @better-auth/cli generate --config ./lib/auth.js",
+    "db:migrate": "npx @better-auth/cli migrate --config ./lib/auth.js"
+  },
+  "dependencies": {
+    "better-auth": "^1.6.0",
+    "pg": "^8.16.3"
+  }
+}
