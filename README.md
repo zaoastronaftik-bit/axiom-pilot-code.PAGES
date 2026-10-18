@@ -1,54 +1,37 @@
-# AxiomPilotCode — website
+# AxiomPilotCode Website + Account API
 
-Official public landing page for [AxiomPilotCode](https://github.com/zaoastronaftik-bit/axiom-pilot-code).
+Official light-blue glass landing page for [AxiomPilotCode](https://github.com/zaoastronaftik-bit/axiom-pilot-code).
 
-## Live site / free hosting
+## Website hosting
 
-This is a static GitHub Pages website, published from `main` → `/(root)`.
+The static website is hosted by **GitHub Pages** from `main` / `(root)`, with no build step.
 
-Expected URL: **https://zaoastronaftik-bit.github.io/axiom-pilot-code.PAGES/**
+Public URL: https://zaoastronaftik-bit.github.io/axiom-pilot-code.PAGES/
 
-If GitHub Pages isn't enabled, go to **Settings → Pages → Deploy from a branch → main → /(root) → Save**.
+## Site files
 
-The root `index.html` runs without any build step. CSS and JavaScript live in separate files.
+- `index.html`, `site.css`, `site.js` — responsive static landing page
+- `auth.css`, `account.js`, `api-config.js` — account dialogs, independent API integration
+- `favicon.svg` — AxiomPilotCode brand mark
 
-## Design
+The design uses a single blue accent with CSS blur/glass treatments, hand-drawn SVG arrows and reduced-motion support. JavaScript is externalized and restricted by a CSP.
 
-- Light glassmorphism with blur, restrained animation and responsive layout
-- Blue-only palette; no color/theme picker
-- Original inline SVG arrow artwork; no Unicode arrow glyphs in the UI
-- Subtle pointer states and accessible keyboard focus indicators
-- Reduced-motion preferences are respected
+## Account backend
 
-## Authentication status
+- `server/` — independent [Better Auth](https://better-auth.com/) + PostgreSQL API designed for Vercel.
+- **Supabase Auth is NOT used.** Supabase is intended only as a dedicated PostgreSQL host.
+- New accounts start on Free. Pro is assigned only via trusted server/database administration.
+- Browser bearer sessions currently use tab-scoped sessionStorage because the site and server are on unrelated origins; see the [security tradeoffs](./server/README.md).
+- Recovery emails require a separate verified email-sending provider.
 
-The login, registration and account screens are implemented with forms for:
+**Current status:** server source and UI exist, but real account creation is **not active**. The dedicated database and Vercel deployment still need to be provisioned, and the public API URL configured in `api-config.js`. The login dialog warns visitors before accepting production credentials. The code is a deployment candidate, not a production-tested authentication system.
 
-- Sign in: email + password
-- Create account: email + password + repeat password
-- Password recovery by email and setting a new password
-- Signed-in profile displaying email and Free/Pro status, plus sign out
+## Setup
 
-**Live authentication is not yet enabled.** The site does not collect or store credentials while Supabase configuration is empty. The forms will display an unavailable message instead of pretending to create an account.
+1. Enable **Settings → Pages → Deploy from a branch → main → /(root)**.
+2. Create a separate dedicated AxiomPilotCode PostgreSQL project; do not reuse databases from unrelated apps.
+3. Follow the [server deployment checklist](./server/README.md) to apply migrations and configure Vercel secrets.
+4. Set `window.AXIOM_ACCOUNT_API.baseURL` in `api-config.js` to your new HTTPS API origin, commit, and test the entire sign-up/sign-in/profile flow.
+5. Keep model inference and projects local; the account API does not store user source code.
 
-To enable real login and registration:
-
-1. Create a **dedicated Supabase project** for AxiomPilotCode; never reuse an unrelated project's users or database.
-2. Run [`supabase/profiles.sql`](./supabase/profiles.sql) on that project using Supabase SQL Editor. It adds `public.profiles`, initializes every new user at **Free**, and uses row-level security so signed-in users **cannot change their plan**.
-3. In **Supabase → Authentication → URL Configuration**, set the Site URL to the real GitHub Pages URL above. Add that URL to **Redirect URLs**.
-4. In **Authentication → Providers → Email**, configure whether new signups require email confirmation. The current UI supports both flows. Disabling confirmation removes an extra verification step, but password validation, rate limits and normal Supabase protections still apply.
-5. Copy the **Project URL** and the **public anon/publishable key** into [`supabase-config.js`](./supabase-config.js), as `url` and `anonKey` respectively.
-6. Commit changes to `main`. GitHub Pages will publish the updated static site automatically.
-
-**Never commit a `service_role` or secret key.** Only the public anon/publishable key belongs in frontend code. Supabase Auth securely manages passwords and sessions; browsers do not handle password hashing themselves.
-
-## Source files
-
-- `index.html` — the landing page and account markup
-- `auth.css` — light-glass modal and interaction design
-- `auth.js` — Supabase Auth login, signup, reset and profile flows
-- `supabase-config.js` — public configuration placeholders
-- `supabase/profiles.sql` — server-side profile + RLS schema
-- `favicon.svg` — blue-only AxiomPilotCode mark
-
-The login screens do not yet authorize CLI devices; the browser-to-CLI sign-in handshake is a later separate feature.
+No mandatory accounts for core local CLI features.
