@@ -23,7 +23,7 @@ test('profile has independent nickname, chat, module and device surfaces', () =>
 });
 test('offline cache excludes authentication pages and never handles cross-origin API', () => {
   const sw = file('profile-sw.js');
-  assert.match(sw, /axiom-profile-static-v2/);
+  assert.match(sw, /axiom-profile-static-v3/);
   assert.match(sw, /if \(url\.origin !== self\.location\.origin/);
   assert.doesNotMatch(sw, /['"]\.\/index\.html['"]/);
   assert.doesNotMatch(sw, /['"]\.\/login\.html['"]/);
@@ -44,7 +44,7 @@ test('support links keep the classic landing layout and open the specified Teleg
   const homepage = file('index.html');
   const profile = file('profile.html');
   const support = file('support.html');
-  const logo = file('support.svg');
+  const logo = readFileSync(new URL('../support-icon.webp', import.meta.url));
   const css = file('support.css');
   assert.match(homepage, /href="\.\/support\.html"/);
   assert.match(profile, /href="\.\/support\.html"/);
@@ -54,10 +54,15 @@ test('support links keep the classic landing layout and open the specified Teleg
   assert.doesNotMatch(homepage, /enhancements\.css|data-theme-toggle/);
   assert.match(support, /https:\/\/t\.me\/AxiomPilotCode_bot/);
   assert.match(support, /rel="noopener noreferrer"/);
-  assert.match(support, /src="\.\/support\.svg"/);
+  assert.match(support, /src="\.\/support-icon\.webp"/);
+  assert.match(homepage, /src="\.\/support-icon\.webp"/);
+  assert.match(profile, /src="\.\/support-icon\.webp"/);
+  assert.doesNotMatch(homepage + profile + support, /support\.svg/);
   assert.match(support, /href="\.\/site\.css"/);
   assert.match(support, /href="\.\/support\.css"/);
-  assert.match(logo, /M12 57L34 18L57 57/);
-  assert.match(logo, />SUPPORT<\/text>/);
+  assert.equal(logo.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(logo.toString('ascii', 8, 12), 'WEBP');
+  assert.ok(logo.byteLength > 2500);
+  assert.match(file('profile-sw.js'), /support-icon\.webp/);
   assert.match(css, /@media\(max-width:460px\)/);
 });
