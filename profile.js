@@ -435,7 +435,11 @@
   });
 
   async function start() {
-    showSection(location.hash.slice(1));
+    const supplied = new URLSearchParams(location.search).get('device');
+    if (supplied && /^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/i.test(supplied)) {
+      $('device-user-code').value = supplied.toUpperCase();
+      showSection('settings');
+    } else showSection(location.hash.slice(1));
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./profile-sw.js', { scope: './' }).catch(() => {});
     }
@@ -455,6 +459,7 @@
           offline = false;
           state('online','Онлайн');
           render();
+          await loadDevices();
           await sync();
           return;
         } catch (error) {
