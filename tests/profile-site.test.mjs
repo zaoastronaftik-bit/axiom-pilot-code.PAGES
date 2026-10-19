@@ -23,7 +23,7 @@ test('profile has independent nickname, chat, module and device surfaces', () =>
 });
 test('offline cache excludes authentication pages and never handles cross-origin API', () => {
   const sw = file('profile-sw.js');
-  assert.match(sw, /axiom-profile-static-v3/);
+  assert.match(sw, /axiom-profile-static-v4/);
   assert.match(sw, /if \(url\.origin !== self\.location\.origin/);
   assert.doesNotMatch(sw, /['"]\.\/index\.html['"]/);
   assert.doesNotMatch(sw, /['"]\.\/login\.html['"]/);
@@ -64,5 +64,6 @@ test('support links keep the classic landing layout and open the specified Teleg
   assert.equal(logo.toString('ascii', 8, 12), 'WEBP');
   assert.ok(logo.byteLength > 2500);
   assert.match(file('profile-sw.js'), /support-icon\.webp/);
+  assert.match(file('profile-sw.js'), /support\.css/);
   assert.match(css, /@media\(max-width:460px\)/);
 });
