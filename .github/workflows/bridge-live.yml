@@ -1,0 +1,20 @@
+name: AxiomPilotCode encrypted bridge live E2E
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/bridge-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bridge-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test account nickname, CLI device authorization and encrypted relay
+        run: node tests/bridge-live.test.mjs
