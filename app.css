@@ -152,3 +152,6 @@ html[data-theme="dark"] .auth-submit:not(:disabled):hover{background:#9ad3ff}
   .account-footer{margin-top:44px}
 }
 @media(prefers-reduced-motion:reduce){.dashboard-panel{animation:none}}
+
+.brand-img{display:block;flex:none;width:34px;height:34px;border-radius:10px}
+@media(max-width:460px){.brand-img{width:29px;height:29px}}
