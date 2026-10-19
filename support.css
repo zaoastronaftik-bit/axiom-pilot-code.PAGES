@@ -27,6 +27,7 @@
   .support-main{padding:60px 0 75px}
 }
 @media(max-width:460px){
+  .topbar-inner{gap:8px}
   .support-shortcut{min-height:39px}
   .support-shortcut img{width:27px;height:27px}
   .support-main{padding-top:45px}
