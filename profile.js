@@ -369,6 +369,71 @@
     location.replace('./index.html?login=1');
   });
 
+
+  function deviceMessage(message, success = false) {
+    const el = $('device-status');
+    el.textContent = message;
+    el.dataset.success = String(success);
+  }
+  async function loadDevices() {
+    if (offline || !sessionToken()) return;
+    const container = $('device-token-list');
+    try {
+      const response = await api('/api/tokens');
+      const tokens = Array.isArray(response.tokens) ? response.tokens : [];
+      container.replaceChildren();
+      const available = tokens.filter(t => !t.revoked_at && Date.parse(t.expires_at) > Date.now());
+      if (!available.length) {
+        container.append(textNode('p', 'Привязанных терминалов пока нет.', 'empty-state'));
+        return;
+      }
+      for (const item of available) {
+        const row = textNode('div', '', 'data-item');
+        const left = document.createElement('div');
+        left.append(
+          textNode('strong', 'Терминал · ' + String(item.id).slice(0, 8), 'item-title'),
+          textNode('small', 'Выдан ' + new Date(item.created_at).toLocaleDateString('ru-RU'), 'item-meta')
+        );
+        const revoke = textNode('button', 'Отозвать', 'btn btn-secondary');
+        revoke.type = 'button';
+        revoke.addEventListener('click', async () => {
+          if (!confirm('Отозвать доступ этого терминала к аккаунту?')) return;
+          revoke.disabled = true;
+          try {
+            await api('/api/tokens?action=revoke', { method: 'POST', body: { tokenId: item.id } });
+            await loadDevices();
+            tell('Доступ терминала отозван.', 'success');
+          } catch (error) {
+            revoke.disabled = false;
+            tell('Не удалось отозвать доступ: ' + error.message, 'error');
+          }
+        });
+        row.append(left, revoke);
+        container.append(row);
+      }
+    } catch (error) {
+      deviceMessage('Не удалось получить список устройств: ' + error.message);
+    }
+  }
+  $('approve-device').addEventListener('click', async () => {
+    if (!active || offline || !sessionToken()) return deviceMessage('Для подключения требуется вход в аккаунт и интернет.');
+    const code = $('device-user-code').value.trim().toUpperCase();
+    if (!/^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/.test(code))
+      return deviceMessage('Введите код ABCD-EFGH с экрана терминала.');
+    const button = $('approve-device');
+    button.disabled = true;
+    try {
+      await api('/api/device?action=approve', { method: 'POST', body: { userCode: code } });
+      deviceMessage('Код подтверждён. Вернитесь в CLI и дождитесь завершения входа.', true);
+      $('device-user-code').value = '';
+      if (new URLSearchParams(location.search).has('device'))
+        history.replaceState({}, '', location.pathname + '#settings');
+      await loadDevices();
+    } catch (error) {
+      deviceMessage(error.message || 'Не удалось подтвердить код.');
+    } finally { button.disabled = false; }
+  });
+
   async function start() {
     showSection(location.hash.slice(1));
     if ('serviceWorker' in navigator) {
