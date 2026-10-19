@@ -1,0 +1,78 @@
+name: AxiomPilotCode account live E2E
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/auth-live-check.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  account-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run live API registration and session lifecycle
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { randomBytes } from 'node:crypto';
+          
+          const api = 'https://vkmmqhnuvphiyblyjgif.supabase.co/functions/v1/axiom-account';
+          const origin = 'https://zaoastronaftik-bit.github.io';
+          async function request(path, method = 'GET', body, token) {
+            const response = await fetch(api + path, {
+              method,
+              headers: {
+                'Origin': origin,
+                ...(body ? { 'Content-Type': 'application/json' } : {}),
+                ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+              },
+              ...(body ? { body: JSON.stringify(body) } : {}),
+              signal: AbortSignal.timeout(15000)
+            });
+            const data = await response.json().catch(() => null);
+            return { response, data };
+          }
+          const status = await request('/api/status');
+          assert.equal(status.response.status, 200, 'status endpoint must respond 200: ' + JSON.stringify(status.data));
+          assert.equal(status.response.headers.get('access-control-allow-origin'), origin);
+          console.log('Status API: OK');
+          const preflight = await fetch(api + '/api/auth/sign-up/email', {
+            method: 'OPTIONS',
+            headers: { Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type' },
+            signal: AbortSignal.timeout(15000)
+          });
+          assert.equal(preflight.status, 204, 'CORS preflight');
+          console.log('CORS preflight: OK');
+          const email = 'apc-e2e-' + Date.now() + '-' + randomBytes(4).toString('hex') + '@example.invalid';
+          const password = 'E2e!' + randomBytes(27).toString('base64url');
+          console.log('Synthetic test email (delete after test):', email);
+          const signup = await request('/api/auth/sign-up/email', 'POST', { email, password, name: 'Test' });
+          assert.equal(signup.response.status, 200, 'signup failed: ' + JSON.stringify(signup.data));
+          const token = signup.response.headers.get('set-auth-token');
+          assert.ok(token?.length >= 32, 'missing signup token');
+          console.log('Registration: OK');
+          const profile = await request('/api/profile', 'GET', undefined, token);
+          assert.equal(profile.response.status, 200, 'profile failed: ' + JSON.stringify(profile.data));
+          assert.equal(profile.data.email, email);
+          console.log('Profile: OK');
+          const signout = await request('/api/auth/sign-out', 'POST', {}, token);
+          assert.equal(signout.response.status, 200, 'signout failed: ' + JSON.stringify(signout.data));
+          const revoked = await request('/api/profile', 'GET', undefined, token);
+          assert.equal(revoked.response.status, 401, 'signed-out token must be rejected');
+          console.log('Sign out / revoke: OK');
+          const signin = await request('/api/auth/sign-in/email', 'POST', { email, password });
+          assert.equal(signin.response.status, 200, 'signin failed: ' + JSON.stringify(signin.data));
+          const newToken = signin.response.headers.get('set-auth-token');
+          assert.ok(newToken?.length >= 32, 'missing sign-in token');
+          const profileAgain = await request('/api/profile', 'GET', undefined, newToken);
+          assert.equal(profileAgain.response.status, 200);
+          await request('/api/auth/sign-out', 'POST', {}, newToken);
+          console.log('Sign in: OK');
+          console.log('Live E2E authentication succeeded.');
+          NODE
