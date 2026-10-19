@@ -90,6 +90,8 @@
         delete form.dataset.submitting;
       }
     });
+    // With scripts disabled, forms remain safely disabled instead of leaking passwords via a GET.
+    form.querySelector('[type="submit"]').disabled = false;
   }
 
   document.querySelectorAll('[data-password-toggle]').forEach(button => {
