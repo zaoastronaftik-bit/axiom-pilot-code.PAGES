@@ -29,6 +29,9 @@
   observer.observe(mini, { attributes: true, attributeFilter: ['hidden'] });
   observer.observe(dialog, { attributes: true, attributeFilter: ['open'] });
   const params = new URLSearchParams(location.search);
-  if ((params.has('login') || params.has('device')) && !signedIn())
-    queueMicrotask(() => button.click());
+  if ((params.has('login') || params.has('device') || params.has('signup')) && !signedIn())
+    queueMicrotask(() => {
+      button.click();
+      if (params.has('signup')) document.getElementById('auth-tab-signup')?.click();
+    });
 })();
