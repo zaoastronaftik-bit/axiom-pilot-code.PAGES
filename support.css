@@ -1,0 +1,37 @@
+/* Compact support additions that preserve the original landing design. */
+.support-shortcut{display:inline-flex;justify-content:center;align-items:center;gap:7px;border:1px solid rgba(75,103,147,.17);background:rgba(255,255,255,.75);color:#30415b;min-height:40px;padding:6px 10px;border-radius:11px;font-size:12px;font-weight:700;transition:background .2s,transform .2s}
+.support-shortcut:hover{background:#fff;transform:translateY(-1px)}
+.support-shortcut img{width:27px;height:27px;display:block;border-radius:7px}
+.support-shortcut:focus-visible,.support-primary:focus-visible{outline:3px solid rgba(55,108,230,.4);outline-offset:3px}
+.support-main{padding:90px 0 105px;min-height:65vh}
+.support-shell{max-width:780px;margin:0 auto;text-align:center}
+.support-intro .eyebrow{justify-content:center}
+.support-intro h1{margin:19px auto 21px;max-width:none;line-height:1.08;font-size:clamp(42px,6vw,70px)}
+.support-intro>p{font-size:15px;line-height:1.8;color:#657287;max-width:620px;margin:0 auto}
+.support-card{margin:43px auto 0;border:1px solid rgba(255,255,255,.96);border-radius:24px;background:rgba(255,255,255,.78);box-shadow:0 20px 75px rgba(55,82,120,.10);padding:clamp(25px,5vw,49px);text-align:center}
+.support-card-icon{display:block;width:110px;height:110px;object-fit:contain;margin:0 auto 20px;filter:drop-shadow(0 10px 17px rgba(55,108,230,.11))}
+.support-card h2{font-size:clamp(25px,3vw,33px);line-height:1.2;letter-spacing:-.05em;margin:0 0 13px}
+.support-handle{font-size:14px;color:#376ce6;font-weight:730;overflow-wrap:anywhere}
+.support-card>p{color:#657287;font-size:14px;line-height:1.8;max-width:520px;margin:14px auto 24px}
+.support-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:12px 26px;font-size:14px;font-weight:750;border-radius:12px;color:#fff;background:#376ce6;box-shadow:0 8px 24px rgba(55,108,230,.2);transition:background .2s,transform .2s}
+.support-primary:hover{background:#2459c6;transform:translateY(-2px)}
+.support-primary svg{width:19px;height:19px;fill:currentColor}
+.support-guidance{max-width:780px;margin:25px auto 0;text-align:left;border:1px solid rgba(55,108,230,.10);border-radius:17px;padding:23px 26px;background:rgba(255,255,255,.65)}
+.support-guidance h3{font-size:15px;margin:0 0 11px;letter-spacing:-.025em}
+.support-guidance p{font-size:13px;line-height:1.8;color:#66778b;margin:0}
+.support-guidance p+p{margin-top:10px}
+.support-link{font-weight:700;color:#376ce6}
+@media(max-width:800px){
+  .support-shortcut{padding:5px 7px;min-width:41px}
+  .support-shortcut-label{display:none}
+  .support-main{padding:60px 0 75px}
+}
+@media(max-width:460px){
+  .support-shortcut{min-height:39px}
+  .support-shortcut img{width:27px;height:27px}
+  .support-main{padding-top:45px}
+  .support-card{margin-top:31px;border-radius:18px}
+  .support-guidance{padding:19px}
+  .support-intro>p{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.support-shortcut,.support-primary{transition:none}}
