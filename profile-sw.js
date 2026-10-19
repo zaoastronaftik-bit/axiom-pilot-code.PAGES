@@ -1,12 +1,13 @@
 /* Cache only public static application assets. Never cache private API responses. */
-const CACHE = 'axiom-profile-static-v2';
+const CACHE = 'axiom-profile-static-v3';
 const STATIC = [
   './profile.html',
   './site.css',
   './profile.css',
   './profile.js',
   './api-config.js',
-  './favicon.svg'
+  './favicon.svg',
+  './support-icon.webp'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(STATIC)).then(() => self.skipWaiting()));
