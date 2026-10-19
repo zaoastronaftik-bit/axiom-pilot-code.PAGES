@@ -17,4 +17,4 @@ jobs:
         with:
           node-version: '22'
       - name: Test account nickname, CLI device authorization and encrypted relay
-        run: node tests/bridge-live.test.mjs
+        run: node tests/bridge-live.mjs
