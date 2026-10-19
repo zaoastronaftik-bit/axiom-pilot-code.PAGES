@@ -7,13 +7,13 @@ const root = new URL('../', import.meta.url);
 const file = name => readFileSync(new URL(name, root), 'utf8');
 const script = file('account-page.js');
 
-test('full-page routes preserve native forms, aria tabs and theme controls', () => {
+test('original landing visuals and account dialog are restored without reverting backend integration', () => {
   const homepage = file('index.html');
-  assert.doesNotMatch(homepage, /<dialog id="account-modal"/);
-  assert.match(homepage, /href="\.\/login\.html"/);
-  assert.match(homepage, /href="\.\/signup\.html"/);
-  assert.match(homepage, /data-theme-toggle/);
-  assert.match(homepage, /<details>/);
+  assert.match(homepage, /<dialog id="account-modal"/);
+  assert.match(homepage, /href="\.\/auth\.css"/);
+  assert.match(homepage, /src="\.\/account\.js/);
+  assert.match(homepage, /src="\.\/api-config\.js/);
+  assert.doesNotMatch(homepage, /enhancements\.css|session-nav\.js|data-theme-toggle/);
   for (const page of ['login.html', 'signup.html', 'account.html']) {
     const html = file(page);
     assert.match(html, /href="\.\/enhancements\.css"/);
