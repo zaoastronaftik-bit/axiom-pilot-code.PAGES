@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f9fbff">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://vkmmqhnuvphiyblyjgif.supabase.co; frame-src 'none'; form-action 'self'">
+<meta name="description" content="Личный профиль AxiomPilotCode: никнейм, локальные модули и чаты.">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="stylesheet" href="./site.css">
+<link rel="stylesheet" href="./profile.css">
+<title>Мой профиль — AxiomPilotCode</title>
+<script src="./api-config.js"></script>
+<script src="./profile.js" defer></script>
+</head>
+<body>
+<div class="scene" aria-hidden="true"></div>
+<header class="topbar wrap">
+  <div class="topbar-inner">
+    <a class="brand" href="./index.html" aria-label="AxiomPilotCode, на главную"><img src="./favicon.svg" width="35" height="35" alt=""><span>Axiom<em>Pilot</em>Code</span></a>
+    <nav class="nav-links" aria-label="Навигация"><a href="./index.html#features">Возможности</a><a href="./index.html#how">Установка</a><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <div class="actions"><a class="btn btn-secondary" href="./index.html">← На сайт</a></div>
+  </div>
+</header>
+<main class="profile-page wrap">
+ <div class="profile-heading">
+  <div><div class="eyebrow">AxiomPilotCode / аккаунт</div><h1>Мой профиль<span class="focus">.</span></h1><p>Ваше пространство, ваши настройки. Данные чатов доступны на этом устройстве даже без интернета.</p></div>
+  <span id="connection-state" class="connection-state" role="status" aria-live="polite">Проверяем подключение…</span>
+ </div>
+ <div id="profile-alert" class="profile-alert" role="status" aria-live="polite" hidden></div>
+ <div id="profile-app" class="profile-layout" hidden>
+  <aside class="profile-aside">
+    <div class="profile-avatar-large" id="profile-avatar" aria-hidden="true">A</div>
+    <strong id="sidebar-name" class="profile-username">Участник</strong>
+    <div id="sidebar-email" class="profile-email">—</div>
+    <span class="profile-plan">AxiomPilotCode · <span id="sidebar-plan">Free</span></span>
+    <nav class="profile-nav" aria-label="Разделы профиля">
+      <a href="#overview" data-panel-link="overview" aria-current="page">Обзор</a>
+      <a href="#modules" data-panel-link="modules">Модули</a>
+      <a href="#chats" data-panel-link="chats">Чаты</a>
+      <a href="#settings" data-panel-link="settings">Настройки</a>
+    </nav>
+    <button id="profile-signout" class="btn btn-secondary profile-logout" type="button">Выйти из аккаунта</button>
+  </aside>
+  <div class="profile-content">
+    <section class="profile-panel" id="overview" data-panel="overview" aria-labelledby="overview-title">
+      <div class="profile-panel-label">ОБЗОР</div>
+      <h2 id="overview-title">Добро пожаловать, <span id="greeting-name">разработчик</span>.</h2>
+      <p class="panel-intro">Здесь отображается только информация, переданная вами с CLI. Мы не запускаем облачную модель и не копируем ваши проекты автоматически.</p>
+      <div class="profile-stats">
+        <div><span>Модули</span><strong id="count-modules">0</strong><small>последний снимок</small></div>
+        <div><span>Чаты</span><strong id="count-chats">0</strong><small>в памяти браузера</small></div>
+        <div><span>Синхронизация</span><strong id="last-sync">—</strong><small>последнее получение</small></div>
+      </div>
+      <div class="profile-surface sync-surface">
+        <div><h3>Локальная копия данных</h3><p>После передачи из терминала зашифрованные пакеты расшифровываются в этом браузере. Сервер удаляет пакет после подтверждения, остальные — автоматически через 24 часа.</p></div>
+        <button id="sync-now" class="btn btn-primary" type="button">Проверить обновления</button>
+      </div>
+      <p class="profile-footnote">Офлайн-просмотр работает после первого открытия страницы и получения данных. На другом устройстве без ключа этого браузера зашифрованный пакет не откроется.</p>
+    </section>
+    <section class="profile-panel" id="modules" data-panel="modules" aria-labelledby="modules-title" hidden>
+      <div class="profile-panel-label">МОДУЛИ</div>
+      <h2 id="modules-title">Установленные модули</h2>
+      <p class="panel-intro">Снимок модулей из вашего терминала на момент последней синхронизации.</p>
+      <div id="modules-list" class="data-list" aria-live="polite"><p class="empty-state">Пока нет данных. Подключите CLI и выполните синхронизацию.</p></div>
+    </section>
+    <section class="profile-panel" id="chats" data-panel="chats" aria-labelledby="chats-title" hidden>
+      <div class="profile-panel-label">ЧАТЫ</div>
+      <h2 id="chats-title">Локальная история</h2>
+      <p class="panel-intro">Просматривайте полученные чаты без подключения к интернету. Не загружайте сюда чужие секреты и ключи API.</p>
+      <div id="chats-list" class="data-list" aria-live="polite"><p class="empty-state">История ещё не получена.</p></div>
+      <article id="chat-detail" class="profile-surface chat-detail" hidden>
+        <div class="chat-detail-top"><h3 id="chat-title"></h3><button class="btn btn-secondary" id="close-chat" type="button">Закрыть</button></div>
+        <div id="chat-messages" class="chat-messages"></div>
+      </article>
+    </section>
+    <section class="profile-panel" id="settings" data-panel="settings" aria-labelledby="settings-title" hidden>
+      <div class="profile-panel-label">НАСТРОЙКИ</div>
+      <h2 id="settings-title">Личные данные</h2>
+      <p class="panel-intro">Никнейм привязан к аккаунту. Он не меняет email или способ входа.</p>
+      <form id="nickname-form" class="nickname-form">
+        <label for="nickname">Никнейм</label>
+        <div class="nickname-row"><input id="nickname" name="nickname" required minlength="2" maxlength="32" autocomplete="nickname" placeholder="Например, Astronaut"><button class="btn btn-primary" type="submit">Сохранить</button></div>
+        <small>От 2 до 32 символов, без переносов строк.</small>
+      </form>
+      <div class="profile-surface privacy-surface">
+        <h3>Конфиденциальность и офлайн-копия</h3>
+        <p>Закрытый ключ не покидает этот браузер. Сервер получает только открытый ключ и зашифрованные временные пакеты. Если очистить данные браузера, приватный ключ и локальная история могут быть потеряны.</p>
+        <button id="clear-local" class="btn btn-secondary" type="button">Удалить локальные копии</button>
+      </div>
+    </section>
+  </div>
+ </div>
+ <div id="profile-login-required" class="profile-surface login-required" hidden>
+   <h2>Войдите в аккаунт</h2><p>Для первичной настройки профиля и получения синхронизированных данных нужен вход. После этого сохранённые данные можно смотреть офлайн на этом устройстве.</p><a class="btn btn-primary" href="./index.html?login=1">Открыть вход</a>
+ </div>
+</main>
+<footer class="wrap footer"><a class="brand" href="./index.html">Axiom<em>Pilot</em>Code</a><span>Local-first coding agent</span><div class="links"><a href="./index.html">Главная</a><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code">Исходный код</a></div></footer>
+</body>
+</html>
