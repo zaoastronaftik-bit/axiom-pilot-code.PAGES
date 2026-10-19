@@ -1,4 +1,4 @@
-/* AxiomPilotCode | account client for the independent Better Auth backend. */
+/* AxiomPilotCode | account client for the AxiomPilotCode custom account API. */
 (() => {
   'use strict';
   const dialog = document.getElementById('account-modal');
@@ -8,7 +8,17 @@
   const tabs = $('auth-tabs');
   const messageBox = $('auth-message');
   const base = String(window.AXIOM_ACCOUNT_API?.baseURL ?? '').replace(/\/$/, '');
-  const enabled = /^https:\/\/[a-z0-9][a-z0-9.-]+(?::443)?$/i.test(base);
+  const enabled = (() => {
+    try {
+      const url = new URL(base);
+      return url.protocol === 'https:' &&
+        Boolean(url.hostname) &&
+        !url.username && !url.password &&
+        !url.search && !url.hash;
+    } catch {
+      return false;
+    }
+  })();
   const storageKey = 'axiom-account-session-v1';
   const storedToken = () => sessionStorage.getItem(storageKey) || '';
   let token = storedToken();
