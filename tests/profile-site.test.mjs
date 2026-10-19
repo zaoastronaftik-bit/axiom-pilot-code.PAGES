@@ -39,3 +39,25 @@ test('CLI sync is not silently enabled on the website and private key remains lo
   assert.match(page, /privateKey/);
   assert.doesNotMatch(page, /setItem\([^\n]*privateKey/);
 });
+
+test('support links keep the classic landing layout and open the specified Telegram bot', () => {
+  const homepage = file('index.html');
+  const profile = file('profile.html');
+  const support = file('support.html');
+  const logo = file('support.svg');
+  const css = file('support.css');
+  assert.match(homepage, /href="\.\/support\.html"/);
+  assert.match(profile, /href="\.\/support\.html"/);
+  assert.match(homepage, /class="support-shortcut"/);
+  assert.match(profile, /class="support-shortcut"/);
+  assert.match(homepage, /<dialog id="account-modal"/);
+  assert.doesNotMatch(homepage, /enhancements\.css|data-theme-toggle/);
+  assert.match(support, /https:\/\/t\.me\/AxiomPilotCode_bot/);
+  assert.match(support, /rel="noopener noreferrer"/);
+  assert.match(support, /src="\.\/support\.svg"/);
+  assert.match(support, /href="\.\/site\.css"/);
+  assert.match(support, /href="\.\/support\.css"/);
+  assert.match(logo, /M12 57L34 18L57 57/);
+  assert.match(logo, />SUPPORT<\/text>/);
+  assert.match(css, /@media\(max-width:460px\)/);
+});
