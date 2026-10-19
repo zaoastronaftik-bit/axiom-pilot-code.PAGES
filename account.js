@@ -104,6 +104,35 @@
     $('profile-plan').textContent = data.plan === 'pro' ? 'Pro' : 'Free';
     $('open-account').textContent = 'My account';
     mode('profile');
+    await showCliTokens();
+  }
+
+  async function showCliTokens() {
+    let panel = $('cli-token-panel');
+    if (!panel) { panel=document.createElement('section'); panel.id='cli-token-panel'; $('auth-profile').append(panel); }
+    panel.replaceChildren();
+    const title=document.createElement('h3'); title.textContent='Connected CLI tokens'; panel.append(title);
+    try {
+      const {data}=await request('/api/tokens');
+      if (!Array.isArray(data?.tokens)) throw new Error('Invalid token list');
+      if (!data.tokens.length) { const empty=document.createElement('p'); empty.textContent='No CLI tokens.'; panel.append(empty); }
+      for (const item of data.tokens) {
+        const row=document.createElement('div'); const label=document.createElement('p');
+        const expired=Date.parse(item.expires_at)<=Date.now();
+        label.textContent=`Created ${item.created_at} · expires ${item.expires_at} · ${item.revoked_at ? 'revoked' : expired ? 'expired' : 'active'}`;
+        row.append(label);
+        if (!item.revoked_at && !expired) {
+          const button=document.createElement('button'); button.type='button'; button.textContent='Revoke this CLI token';
+          button.addEventListener('click', async () => {
+            if (!confirm('Revoke this CLI token? The CLI will need to sign in again.')) return;
+            button.disabled=true;
+            try { await request('/api/tokens?action=revoke',{method:'POST',body:{tokenId:item.id}}); await showCliTokens(); }
+            catch(error) { notice(error.message,'error'); button.disabled=false; }
+          }); row.append(button);
+        }
+        panel.append(row);
+      }
+    } catch(error) { const failed=document.createElement('p'); failed.textContent=`Token management unavailable: ${error.message}`; panel.append(failed); }
   }
 
   function submit(form, handler) {

@@ -50,3 +50,11 @@ The tests cover CORS and request utilities. Add real DB integration tests before
 - **Important:** a device token is not a regular Better Auth browser session and cannot act as an admin token. CLI must save its one-time access token in OS-protected credential storage, not in the project directory or shell history.
 - Additional hardening before general release: route-specific distributed rate limiting, CLI token revocation UX, multi-device listing, integration tests with a real Postgres instance and adversarial review.
 - Run `sql/002_cli_devices.sql` after `sql/001_profiles.sql`.
+
+## CLI revocation contract (additive)
+
+`POST /api/cli?action=revoke`, CLI bearer, `{}` → `{revoked:true}`: idempotent self-revocation. CLI must retain credentials on network failure to allow retry; explicit local-only logout cannot revoke a remote token.
+
+`GET /api/tokens`, browser bearer → `{tokens:[{id,created_at,last_used_at,expires_at,revoked_at}]}`. `POST /api/tokens?action=revoke`, browser bearer, `{tokenId}` revokes only the authenticated owner's token. Another owner's ID returns 404. Account UI asks for confirmation. No secrets or hashes are returned. Existing SQL already includes revoked_at; 90-day expiry is unchanged.
+
+Tests use an injected database boundary, not a real Postgres deployment. Live HTTPS/DB/device/browser acceptance and route-specific distributed rate limiting remain release blockers. Deploy this API before enabling remote CLI logout.
