@@ -16,6 +16,8 @@ jobs:
       - run: node --check account.js
       - run: node --check device-ui.js
       - run: node --check api-config.js
+      - name: Account registration and session regression tests
+        run: node --test tests/account.test.mjs
       - name: Check no Supabase Auth or obsolete theme code
         shell: bash
         run: |
