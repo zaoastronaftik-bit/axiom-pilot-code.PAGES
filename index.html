@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light" />
+  <meta name="color-scheme" content="light dark" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; frame-src 'none'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="description" content="AxiomPilotCode — a local-first coding agent with your models, your workspace, your control." />
@@ -11,7 +11,8 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <title>AxiomPilotCode — Build without giving up control</title>
   <link rel="stylesheet" href="./site.css" />
-<link rel="stylesheet" href="./auth.css">
+<link rel="stylesheet" href="./enhancements.css" />
+<script src="./theme.js"></script>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="axiom-arrow-out" viewBox="0 0 24 24"><path d="M5 18.5 18.5 5M9 5h9.5v9.5"/></symbol><symbol id="axiom-arrow-up" viewBox="0 0 24 24"><path d="M12 20V4M5.5 10.5 12 4l6.5 6.5"/></symbol></defs></svg>
@@ -22,8 +23,8 @@
         <svg viewBox="0 0 70 70" aria-hidden="true" fill="none"><defs><linearGradient id="g" x1="6" x2="64" y1="60" y2="5" gradientUnits="userSpaceOnUse"><stop stop-color="var(--accent)"/><stop offset="1" stop-color="#b8dff9"/></linearGradient></defs><path d="M9 51C3 32 13 12 31 7" stroke="url(#g)" stroke-width="3" opacity=".65" stroke-linecap="round"/><path d="M39 7C56 10 67 30 60 51" stroke="url(#g)" stroke-width="3" opacity=".65" stroke-linecap="round"/><path d="M12 57L34 18L57 57" stroke="url(#g)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><path d="m27 42 8 7-8 7M37 56h9" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="m34 3 1.5 4 4 1.5-4 1.5L34 14l-1.5-4-4-1.5 4-1.5L34 3Z" fill="var(--accent)"/></svg>
         <span>Axiom<em>Pilot</em>Code</span>
       </a>
-      <nav class="nav-links" aria-label="Main navigation"><a href="#features">Product</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></nav>
-      <div class="actions"><button class="btn btn-primary" id="open-account">Sign in <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button></div>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#features">Product</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></nav>
+      <div class="actions"><button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">☾ Dark</button><a class="btn btn-primary" id="open-account" href="./login.html">Sign in <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></div>
     </div>
   </header>
   <main id="top">
@@ -32,7 +33,7 @@
         <div class="eyebrow">Your AI. Your environment.</div>
         <h1>Build freely.<br/>Stay in <span class="focus">control.</span></h1>
         <p class="intro">A thoughtful coding companion built around your own models. Write, iterate, and ship — with an AI agent that works where your code lives.</p>
-        <div class="hero-buttons"><a class="btn btn-primary" href="#how">See how it works <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a><a class="btn btn-secondary" href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">Explore on GitHub <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></div>
+        <div class="hero-buttons"><a class="btn btn-primary" href="./signup.html">Create free account <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a><a class="btn btn-secondary" href="#how">See how it works <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></div>
         <div class="hero-note"><svg class="icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="14" height="10" rx="2"/><path d="M6 8V6a4 4 0 0 1 8 0v2"/></svg>Local-first by design · Built for developers</div>
       </div>
       <div class="stage">
@@ -73,21 +74,32 @@
         <article class="price-card pro reveal"><div class="price-head"><h3>Pro</h3><span class="price-badge">PLANNED</span></div><div class="price">Soon <small>/ details to come</small></div><div class="desc">Designed for expanded workflows and optional online services. Not available for purchase yet.</div><div class="benefits"><span>Extended agent workflows — planned</span><span>Workspace sync — planned</span><span>More integrations — planned</span></div></article>
       </div>
     </section>
-    <section class="section wrap" id="account-section" style="padding-top:55px"><div class="section-head reveal"><div><div class="eyebrow">One account, across devices</div><h2>Keep a place<br/>for your work.</h2></div><p>Create an account or sign in to keep your profile, preferences and subscription in one place.</p></div><div class="profile-preview reveal"><div class="profile-main"><div class="avatar">A</div><div><h3>My workspace</h3><p>Personal account · Example profile</p></div></div><button class="btn btn-secondary" id="preview-profile">Open account <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button></div><p class="profile-note">Register or sign in to your AxiomPilotCode account.</p></section>
+    <section class="section wrap" id="account-section" style="padding-top:55px"><div class="section-head reveal"><div><div class="eyebrow">One account, across devices</div><h2>Keep a place<br/>for your work.</h2></div><p>Create an account or sign in to keep your profile, preferences and subscription in one place.</p></div><div class="profile-preview reveal"><div class="profile-main"><div class="avatar">A</div><div><h3>My workspace</h3><p>Personal account · Example profile</p></div></div><a class="btn btn-secondary" id="preview-profile" href="./account.html">Open workspace <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a></div><p class="profile-note">Register or sign in to your AxiomPilotCode account.</p></section>
+<section class="section wrap" id="roadmap">
+  <div class="section-head reveal"><div><div class="eyebrow">Built in the open</div><h2>Clear about what ships.<br/>Clear about what's next.</h2></div><p>AxiomPilotCode is a developer preview. We're building the foundations before promising features that aren't ready yet.</p></div>
+  <div class="features">
+    <article class="feature reveal"><div class="feature-icon" aria-hidden="true">✓</div><h3>Available today</h3><p>Run a local coding agent with LM Studio, inspect files, and approve edits or commands before they're applied.</p></article>
+    <article class="feature reveal"><div class="feature-icon" aria-hidden="true">◇</div><h3>In development</h3><p>Better context handling, refined Deep workflows, and terminal-to-account device linking.</p></article>
+    <article class="feature reveal"><div class="feature-icon" aria-hidden="true">↗</div><h3>Keep track of progress</h3><p>Follow the source repository, review the code and contribute ideas as AxiomPilotCode evolves.</p><a class="auth-back-link" href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">View source ↗</a></article>
+  </div>
+  <div class="build-status" aria-label="Release status"><span><strong>CLI:</strong> v0.1 developer preview</span><span><strong>Account:</strong> sign in &amp; profile active</span><span><strong>Pro:</strong> planned</span></div>
+</section>
+<section class="section wrap" id="faq">
+  <div class="section-head reveal"><div><div class="eyebrow">Good to know</div><h2>Questions,<br/>answered simply.</h2></div><p>Practical details about local AI, accounts, and what the preview includes.</p></div>
+  <div class="faq-list">
+    <details><summary>Does AxiomPilotCode send my code to a cloud AI?</summary><p>By default, the agent connects to a model served locally by LM Studio. Your project files and inference stay on your machine unless you deliberately configure another endpoint or execute commands that access the network.</p></details>
+    <details><summary>Do I need a website account to use the CLI?</summary><p>No. The current developer preview works locally without an account. Website accounts are for your profile; terminal account linking is still in development.</p></details>
+    <details><summary>What can Fast and Deep do today?</summary><p>Fast runs a direct agent workflow. Deep adds a planning pass before execution using the same model. Specialist multi-agent orchestration is on the roadmap.</p></details>
+    <details><summary>Is AxiomPilotCode Pro available now?</summary><p>Not yet. The Free account is available, but Pro features and pricing have not been launched.</p></details>
+  </div>
+</section>
   </main>
   <footer class="wrap footer"><a class="brand" href="#top">Axiom<em>Pilot</em>Code</a><div>Built around your work, not the other way around.</div><div class="links"><a href="https://github.com/zaoastronaftik-bit/axiom-pilot-code" target="_blank" rel="noopener noreferrer">GitHub <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></a><a href="#pricing">Pricing</a><a href="#top">Back to top <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-up"></use></svg></a></div></footer>
-  <dialog id="account-modal" aria-labelledby="auth-title"><div class="account-shell"><div class="account-top"><span class="brand">Axiom<em>Pilot</em>Code</span><button class="account-close" id="close-account" type="button" aria-label="Close account"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"/></svg></button></div><div class="auth-eyebrow">Your space to build</div><h2 id="auth-title">Welcome back.</h2><p class="auth-copy" id="auth-description">Sign in to your AxiomPilotCode account.</p><div class="auth-switcher" id="auth-tabs" role="tablist" aria-label="Account access"><button id="auth-tab-login" role="tab" type="button" aria-selected="true" aria-controls="auth-login-form">Sign in</button><button id="auth-tab-signup" role="tab" type="button" aria-selected="false" aria-controls="auth-signup-form">Create account</button></div><form class="auth-form" id="auth-login-form" ><div class="auth-field"><label for="login-email">Email address</label><input id="login-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div><div class="auth-field"><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required></div><div class="auth-helper"><button type="button" id="forgot-password">Forgot password?</button></div><button class="auth-submit" type="submit">Sign in <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button></form><form class="auth-form" id="auth-signup-form" hidden><div class="auth-field"><label for="signup-email">Email address</label><input id="signup-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div><div class="auth-field"><label for="signup-password">Password</label><input id="signup-password" name="password" type="password" autocomplete="new-password" placeholder="Create a password" required></div><div class="auth-field"><label for="signup-repeat">Repeat password</label><input id="signup-repeat" name="repeatPassword" type="password" autocomplete="new-password" placeholder="Repeat your password" required></div><button class="auth-submit" type="submit">Create account <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button></form><form class="auth-form" id="auth-reset-form" hidden><div class="auth-field"><label for="reset-email">Email address</label><input id="reset-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div><button class="auth-submit" type="submit">Send recovery link <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button><button type="button" class="auth-text-button" id="back-to-login">Back to sign in</button></form><form class="auth-form" id="auth-recover-form" hidden><div class="auth-field"><label for="recover-password">New password</label><input id="recover-password" name="password" type="password" autocomplete="new-password" placeholder="" required></div><div class="auth-field"><label for="recover-repeat">Repeat new password</label><input id="recover-repeat" name="repeatPassword" type="password" autocomplete="new-password" placeholder="" required></div><button class="auth-submit" type="submit">Save password <svg class="custom-arrow" aria-hidden="true"><use href="#axiom-arrow-out"></use></svg></button></form><section id="auth-profile" hidden aria-label="Account profile"><div id="profile-avatar" class="account-avatar" aria-hidden="true">A</div><div id="profile-email" class="account-email"></div><div class="account-detail"><span>Plan</span><strong id="profile-plan">—</strong></div><div class="account-detail"><span>CLI access</span><strong>Coming soon</strong></div><div class="profile-actions"><button class="btn btn-secondary" id="sign-out" type="button">Sign out</button></div>
-<div class="device-approval">
-  <div class="device-approval-title">Connect your terminal</div>
-  <p>Enter the one-time code shown by AxiomPilotCode. Approve only when you initiated this sign-in yourself.</p>
-  <label for="device-user-code">One-time device code</label>
-  <input id="device-user-code" type="text" placeholder="ABCD-EFGH" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" />
-  <button id="approve-device" type="button" class="auth-submit">Approve this device</button>
-  <div id="device-status" role="status" aria-live="polite"></div>
-</div></section><div class="auth-notice" id="auth-message" role="status" aria-live="polite" hidden></div><div class="auth-footnote">Your local AI models and code stay on your device. Account access is handled by AxiomPilotCode on our Supabase-hosted server.</div></div></dialog>
+
   <script src="./site.js" defer></script>
-<script src="./api-config.js?v=auth-20261019-2"></script>
-<script src="./account.js?v=auth-20261019-2" defer></script>
-<script src="./device-ui.js" defer></script>
+<script src="./session-nav.js" defer></script>
+
+
+
 </body>
 </html>
