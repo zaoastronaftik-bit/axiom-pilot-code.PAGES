@@ -6,6 +6,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const baseURL = String(window.AXIOM_ACCOUNT_API?.baseURL || '').replace(/\/$/, '');
+  const bridgeURL = baseURL.replace(/\/axiom-account$/, '/axiom-bridge');
   const storageKey = 'axiom-account-session-v1';
   const lastUserKey = 'axiom-offline-last-user-v1';
   const databaseName = 'axiom-offline-profile-v1';
@@ -88,7 +89,7 @@
 
   async function api(route, options = {}) {
     if (!sessionToken()) throw new Error('Для этого действия нужно войти в аккаунт.');
-    const response = await fetch(baseURL + route, {
+    const response = await fetch((route.startsWith('/api/auth/') ? baseURL : bridgeURL) + route, {
       method: options.method || 'GET',
       mode: 'cors',
       credentials: 'omit',
