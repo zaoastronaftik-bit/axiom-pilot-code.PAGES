@@ -1,9 +1,10 @@
 /* Cache only public static application assets. Never cache private API responses. */
-const CACHE = 'axiom-profile-static-v3';
+const CACHE = 'axiom-profile-static-v4';
 const STATIC = [
   './profile.html',
   './site.css',
   './profile.css',
+  './support.css',
   './profile.js',
   './api-config.js',
   './favicon.svg',
