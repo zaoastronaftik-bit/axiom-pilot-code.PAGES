@@ -19,8 +19,11 @@ jobs:
       - run: node --check theme.js
       - run: node --check session-nav.js
       - run: node --check account-page.js
+      - run: node --check profile.js
+      - run: node --check profile-entry.js
+      - run: node --check profile-sw.js
       - name: Account registration, standalone pages, and session tests
-        run: node --test tests/*.test.mjs
+        run: node --test tests/account.test.mjs tests/account-pages.test.mjs
       - name: Check no Supabase Auth or obsolete theme code
         shell: bash
         run: |
